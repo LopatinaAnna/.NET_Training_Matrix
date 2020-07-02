@@ -199,6 +199,7 @@ namespace MatrixTests
 
         #endregion Startup Data
 
+
         #region Low
 
         [TestCaseSource(nameof(ArraysCreateMatrix))]
@@ -350,8 +351,6 @@ namespace MatrixTests
 
         #endregion Low
 
-        //TODO: Uncomment this if you want to check your task for advanced unit tests
-        /*
 
         #region Advanced
 
@@ -499,7 +498,7 @@ namespace MatrixTests
             Assert.Catch<ArgumentNullException>(() =>
             {
                 var res1 = matrix1 + matrix2;
-            },message:"Operator '+' should throw ArgumentNullException if one of arguments is null.");
+            }, message: "Operator '+' should throw ArgumentNullException if one of arguments is null.");
         }
 
         [Test]
@@ -511,7 +510,7 @@ namespace MatrixTests
             Assert.Catch<ArgumentNullException>(() =>
             {
                 var res1 = matrix1 + matrix2;
-            },message:"Operator '+' should throw ArgumentNullException if one of arguments is null.");
+            }, message: "Operator '+' should throw ArgumentNullException if one of arguments is null.");
         }
 
         [Test]
@@ -523,7 +522,7 @@ namespace MatrixTests
             Assert.Catch<ArgumentNullException>(() =>
             {
                 var res1 = matrix1 - matrix2;
-            },message:"Operator '-' should throw ArgumentNullException if one of arguments is null.");
+            }, message: "Operator '-' should throw ArgumentNullException if one of arguments is null.");
         }
 
         [Test]
@@ -535,7 +534,7 @@ namespace MatrixTests
             Assert.Catch<ArgumentNullException>(() =>
             {
                 var res1 = matrix1 - matrix2;
-            },message:"Operator '-' should throw ArgumentNullException if one of arguments is null.");
+            }, message: "Operator '-' should throw ArgumentNullException if one of arguments is null.");
         }
 
         [Test]
@@ -547,7 +546,7 @@ namespace MatrixTests
             Assert.Catch<ArgumentNullException>(() =>
             {
                 var res1 = matrix1 * matrix2;
-            },message:"Operator '*' should throw ArgumentNullException if one of arguments is null.");
+            }, message: "Operator '*' should throw ArgumentNullException if one of arguments is null.");
         }
 
         [Test]
@@ -559,7 +558,7 @@ namespace MatrixTests
             Assert.Catch<ArgumentNullException>(() =>
             {
                 var res1 = matrix1 * matrix2;
-            },message:"Operator '*' should throw ArgumentNullException if one of arguments is null.");
+            }, message: "Operator '*' should throw ArgumentNullException if one of arguments is null.");
         }
 
         [Test]
@@ -571,7 +570,7 @@ namespace MatrixTests
             Assert.Catch<ArgumentNullException>(() =>
             {
                 var res1 = matrix1.Add(matrix2);
-            },message:"Method 'Add' should throw ArgumentNullException if one of arguments is null.");
+            }, message: "Method 'Add' should throw ArgumentNullException if one of arguments is null.");
         }
 
         [Test]
@@ -583,7 +582,7 @@ namespace MatrixTests
             Assert.Catch<ArgumentNullException>(() =>
             {
                 var res1 = matrix1.Subtract(matrix2);
-            },message:"Method 'Subtract' should throw ArgumentNullException if one of arguments is null.");
+            }, message: "Method 'Subtract' should throw ArgumentNullException if one of arguments is null.");
         }
 
         [Test]
@@ -595,7 +594,7 @@ namespace MatrixTests
             Assert.Catch<ArgumentNullException>(() =>
             {
                 var res1 = matrix1.Multiply(matrix2);
-            },message:"Method 'Multiply' should throw ArgumentNullException if one of arguments is null.");
+            }, message: "Method 'Multiply' should throw ArgumentNullException if one of arguments is null.");
         }
 
         [TestCaseSource(nameof(ArraysEquals))]
@@ -618,7 +617,7 @@ namespace MatrixTests
         public void Equals_CompareWithNull_ReturnsFalse()
         {
             // Arrange
-            var array = new double[2, 2] {{1, 2}, {1, 2}};
+            var array = new double[2, 2] { { 1, 2 }, { 1, 2 } };
             var matrix = new Matrix(array);
 
             // Act
@@ -631,7 +630,7 @@ namespace MatrixTests
         [Test]
         public void Equals_CompareWithNotMatrix_ReturnsFalse()
         {
-            var array = new double[2, 2] {{1, 2}, {1, 2}};
+            var array = new double[2, 2] { { 1, 2 }, { 1, 2 } };
             var matrix = new Matrix(array);
 
             var result = matrix.Equals(1337);
@@ -645,10 +644,11 @@ namespace MatrixTests
             var matrix1 = new Matrix(array1);
             var matrix2 = new Matrix(array2);
 
-            Assert.DoesNotThrow(() => {
+            Assert.DoesNotThrow(() =>
+            {
                 var result1 = matrix1.Equals(matrix2);
                 var result2 = matrix2.Equals(matrix1);
-            }, message:"Equals should not throw exceptions.");
+            }, message: "Equals should not throw exceptions.");
         }
 
         [TestCaseSource(nameof(ArraysCreateMatrix))]
@@ -656,7 +656,7 @@ namespace MatrixTests
         {
             var matrix = new Matrix(array);
 
-            var matrixClone = (Matrix) matrix.Clone();
+            var matrixClone = (Matrix)matrix.Clone();
 
             var referenceEquals = ReferenceEquals(matrix, matrixClone);
 
@@ -667,7 +667,5 @@ namespace MatrixTests
         }
 
         #endregion Advanced
-
-        */
     }
 }

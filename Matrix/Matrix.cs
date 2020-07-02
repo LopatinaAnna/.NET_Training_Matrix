@@ -21,33 +21,20 @@ namespace MatrixLibrary
 
     public class Matrix : ICloneable
     {
-        private readonly int rows;
-        private readonly int columns;
-        private readonly double[,] array;
-
         /// <summary>
         /// Number of rows.
         /// </summary>
-        public int Rows
-        {
-            get => rows;
-        }
+        public int Rows { get; }
 
         /// <summary>
         /// Number of columns.
         /// </summary>
-        public int Columns
-        {
-            get => columns;
-        }
+        public int Columns { get; }
 
         /// <summary>
         /// Gets an array of floating-point values that represents the elements of this Matrix.
         /// </summary>
-        public double[,] Array
-        {
-            get => array;
-        }
+        public double[,] Array { get; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Matrix"/> class.
@@ -57,9 +44,21 @@ namespace MatrixLibrary
         /// <exception cref="ArgumentOutOfRangeException"></exception>
         public Matrix(int rows, int columns)
         {
-            this.rows = rows;
-            this.columns = columns;
-            this.array = new double[this.rows, this.columns];
+            Rows = rows;
+            Columns = columns;
+
+            try
+            {
+                Array = new double[Rows, Columns];
+            }
+            catch when (rows <= 0)
+            {
+                throw new ArgumentOutOfRangeException("rows", "The rows value is wrong");
+            }
+            catch when (columns <= 0)
+            {
+                throw new ArgumentOutOfRangeException("columns", "The columns value is wrong");
+            }
         }
 
         /// <summary>
@@ -69,9 +68,16 @@ namespace MatrixLibrary
         /// <exception cref="ArgumentNullException"></exception>
         public Matrix(double[,] array)
         {
-            this.rows = array.GetLength(0);
-            this.columns = array.GetLength(1);
-            this.array = array;
+            try
+            {
+                Array = array;
+                Rows = array.GetLength(0);
+                Columns = array.GetLength(1);
+            }
+            catch
+            {
+                throw new ArgumentNullException("array", "The array value is wrong");
+            }
         }
 
         /// <summary>
@@ -82,8 +88,36 @@ namespace MatrixLibrary
         /// <exception cref="ArgumentException"></exception>
         public double this[int row, int column]
         {
-            get => Array[row, column];
-            set => Array[row, column] = value;
+            get
+            {
+                try
+                {
+                    return Array[row, column];
+                }
+                catch when (row <= 0)
+                {
+                    throw new ArgumentException("The row value is wrong", "row");
+                }
+                catch when (column <= 0)
+                {
+                    throw new ArgumentException("The column value is wrong", "column");
+                }
+            }
+            set
+            {
+                try
+                {
+                    Array[row, column] = value;
+                }
+                catch when (row <= 0)
+                {
+                    throw new ArgumentException("The rows value is wrong", "row");
+                }
+                catch when (column <= 0)
+                {
+                    throw new ArgumentException("The columns value is wrong", "column");
+                }
+            }
         }
 
         /// <summary>
@@ -92,7 +126,7 @@ namespace MatrixLibrary
         /// <returns>A deep copy of the current object.</returns>
         public object Clone()
         {
-            return new Matrix(this.Array);
+            return new Matrix(Array);
         }
 
         /// <summary>
@@ -105,7 +139,22 @@ namespace MatrixLibrary
         /// <exception cref="MatrixException"></exception>
         public static Matrix operator +(Matrix matrix1, Matrix matrix2)
         {
-            return matrix1.Add(matrix2);
+            try
+            {
+                return matrix1.Add(matrix2);
+            }
+            catch when (matrix1 == null)
+            {
+                throw new ArgumentNullException("matrix1", "Matrix is null");
+            }
+            catch when (matrix2 == null)
+            {
+                throw new ArgumentNullException("matrix2", "Matrix is null");
+            }
+            catch
+            {
+                throw new MatrixException("Matrices have inappropriate dimensions");
+            }
         }
 
         /// <summary>
@@ -118,7 +167,22 @@ namespace MatrixLibrary
         /// <exception cref="MatrixException"></exception>
         public static Matrix operator -(Matrix matrix1, Matrix matrix2)
         {
-            return matrix1.Subtract(matrix2);
+            try
+            {
+                return matrix1.Subtract(matrix2);
+            }
+            catch when (matrix1 == null)
+            {
+                throw new ArgumentNullException("matrix1", "Matrix is null");
+            }
+            catch when (matrix2 == null)
+            {
+                throw new ArgumentNullException("matrix2", "Matrix is null");
+            }
+            catch
+            {
+                throw new MatrixException("Matrices have inappropriate dimensions");
+            }
         }
 
         /// <summary>
@@ -131,7 +195,22 @@ namespace MatrixLibrary
         /// <exception cref="MatrixException"></exception>
         public static Matrix operator *(Matrix matrix1, Matrix matrix2)
         {
-            return matrix1.Multiply(matrix2);
+            try
+            {
+                return matrix1.Multiply(matrix2);
+            }
+            catch when (matrix1 == null)
+            {
+                throw new ArgumentNullException("matrix1", "Matrix is null");
+            }
+            catch when (matrix2 == null)
+            {
+                throw new ArgumentNullException("matrix2", "Matrix is null");
+            }
+            catch
+            {
+                throw new MatrixException("Matrices have inappropriate dimensions");
+            }
         }
 
         /// <summary>
@@ -142,11 +221,20 @@ namespace MatrixLibrary
         /// <exception cref="MatrixException"></exception>
         public Matrix Add(Matrix matrix)
         {
-            Matrix result = this;
+            if (matrix == null)
+            {
+                throw new ArgumentNullException("matrix", "Matrix is null");
+            }
+            if (Rows != matrix.Rows || Columns != matrix.Columns)
+            {
+                throw new MatrixException("Matrices have inappropriate dimensions");
+            }
+
+            Matrix result = new Matrix(this.Rows, this.Columns);
             for (int i = 0; i < matrix.Rows; i++)
                 for (int j = 0; j < matrix.Columns; j++)
                 {
-                    result[i, j] += matrix[i, j];
+                    result[i, j] = this[i, j] + matrix[i, j];
                 }
             return result;
         }
@@ -159,11 +247,20 @@ namespace MatrixLibrary
         /// <exception cref="MatrixException"></exception>
         public Matrix Subtract(Matrix matrix)
         {
-            Matrix result = this;
+            if (matrix == null)
+            {
+                throw new ArgumentNullException("matrix", "Matrix is null");
+            }
+            if (Rows != matrix.Rows || Columns != matrix.Columns)
+            {
+                throw new MatrixException("Matrices have inappropriate dimensions");
+            }
+
+            Matrix result = new Matrix(Rows, Columns);
             for (int i = 0; i < matrix.Rows; i++)
                 for (int j = 0; j < matrix.Columns; j++)
                 {
-                    result[i, j] -= matrix[i, j];
+                    result[i, j] = this[i, j] - matrix[i, j];
                 }
             return result;
         }
@@ -176,14 +273,23 @@ namespace MatrixLibrary
         /// <exception cref="MatrixException"></exception>
         public Matrix Multiply(Matrix matrix)
         {
-            Matrix result = new Matrix(this.Rows, matrix.Columns);
-            for (int i = 0; i < this.Rows; i++)
+            if (matrix == null)
+            {
+                throw new ArgumentNullException("matrix", "Matrix is null");
+            }
+            if (Columns != matrix.Rows)
+            {
+                throw new MatrixException("Matrices have inappropriate dimensions");
+            }
+
+            Matrix result = new Matrix(Rows, matrix.Columns);
+            for (int i = 0; i < Rows; i++)
             {
                 for (int j = 0; j < matrix.Columns; j++)
                 {
                     result[i, j] = 0;
 
-                    for (int k = 0; k < this.Columns; k++)
+                    for (int k = 0; k < Columns; k++)
                     {
                         result[i, j] += this[i, k] * matrix[k, j];
                     }
@@ -197,11 +303,26 @@ namespace MatrixLibrary
         /// </summary>
         /// <param name="obj">Object to compare with. (Can be null)</param>
         /// <returns>True if matrices are equal, false if are not equal.</returns>
-        /// <exception cref="InvalidCastException">Thrown when object has wrong type.</exception>
-        /// <exception cref="MatrixException">Thrown when matrices are incomparable.</exception>
         public override bool Equals(object obj)
         {
-            throw new NotImplementedException();
+            if ((obj == null) || GetType() != obj.GetType())
+                return false;
+
+            Matrix matrix = obj as Matrix;
+
+            if (Rows != matrix.Rows || Columns != matrix.Columns)
+                return false;
+
+            for (int i = 0; i < Rows; i++)
+            {
+                for (int j = 0; j < Columns; j++)
+                {
+                    if (this[i, j] != matrix[i, j])
+                        return false;
+                }
+            }
+
+            return true;
         }
 
         public override int GetHashCode() => Array.GetHashCode();
